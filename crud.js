@@ -28,24 +28,32 @@ async function createMany(req, res) {
 }
 
 async function findAll(req, res) {
-  const { database, collection, selector } = req.body
-  if ("_id" in selector) selector._id = new ObjectId(selector._id)
-  const result = await mongoClient
-    .db(database)
-    .collection(collection)
-    .find(selector)
-    .toArray()
-  return res.json({ count: result.length, result })
+  try {
+    const { database, collection, selector } = req.body
+    if ("_id" in selector) selector._id = new ObjectId(selector._id)
+    const result = await mongoClient
+      .db(database)
+      .collection(collection)
+      .find(selector)
+      .toArray()
+    return res.json({ count: result.length, result })
+  } catch (error) {
+    return res.status(500).json({ error: error.message })
+  }
 }
 
 async function findOne(req, res) {
-  const { database, collection, selector } = req.body
-  if ("_id" in selector) selector._id = new ObjectId(selector._id)
-  const result = await mongoClient
-    .db(database)
-    .collection(collection)
-    .findOne(selector)
-  return res.json({ result })
+  try {
+    const { database, collection, selector } = req.body
+    if ("_id" in selector) selector._id = new ObjectId(selector._id)
+    const result = await mongoClient
+      .db(database)
+      .collection(collection)
+      .findOne(selector)
+    return res.json({ result })
+  } catch (error) {
+    return res.status(500).json({ error: error.message })
+  }
 }
 
 async function update(req, res) {
