@@ -1,5 +1,13 @@
 const { MongoClient, ObjectId } = require("mongodb")
 const mongoClient = new MongoClient("mongodb://0.0.0.0:27017")
+mongoClient
+  .on("connect", () => console.log("MongoDB connected"))
+  .on("close", () => console.log("MongoDB connection closed"))
+  .on("error", (err) => {
+    console.log("MongoDB Error")
+    console.error(err)
+    process.exit(1)
+  })
 
 async function create(req, res) {
   const { database, collection, doc } = req.body
