@@ -65,13 +65,17 @@ async function findOne(req, res) {
 }
 
 async function update(req, res) {
-  const { database, collection, selector, doc } = req.body
-  if ("_id" in selector) selector._id = new ObjectId(selector._id)
-  const result = await mongoClient
-    .db(database)
-    .collection(collection)
-    .updateOne(selector, { $set: doc }, { upsert: false })
-  return res.json({ result })
+  try {
+    const { database, collection, selector, doc } = req.body
+    if ("_id" in selector) selector._id = new ObjectId(selector._id)
+    const result = await mongoClient
+      .db(database)
+      .collection(collection)
+      .updateOne(selector, { $set: doc }, { upsert: false })
+    return res.json({ result })
+  } catch (error) {
+    return res.status(500).json({ error: error.message })
+  }
 }
 
 async function upsert(req, res) {
