@@ -23,12 +23,16 @@ async function create(req, res) {
 }
 
 async function createMany(req, res) {
-  const { database, collection, doc } = req.body
-  const result = await mongoClient
-    .db(database)
-    .collection(collection)
-    .insertMany(doc)
-  return res.json({ result })
+  try {
+    const { database, collection, docs } = req.body
+    const result = await mongoClient
+      .db(database)
+      .collection(collection)
+      .insertMany(docs)
+    return res.json({ result })
+  } catch (error) {
+    return res.status(500).json({ error: error.message })
+  }
 }
 
 async function findAll(req, res) {
