@@ -107,13 +107,17 @@ async function replaceOne(req, res) {
 }
 
 async function deleteOne(req, res) {
-  const { database, collection, selector } = req.body
-  if ("_id" in selector) selector._id = new ObjectId(selector._id)
-  const result = await mongoClient
-    .db(database)
-    .collection(collection)
-    .deleteOne(selector)
-  return res.json({ result })
+  try {
+    const { database, collection, selector } = req.body
+    if ("_id" in selector) selector._id = new ObjectId(selector._id)
+    const result = await mongoClient
+      .db(database)
+      .collection(collection)
+      .deleteOne(selector)
+    return res.json({ result })
+  } catch (error) {
+    return res.status(500).json({ error: error.message })
+  }
 }
 
 module.exports = {
