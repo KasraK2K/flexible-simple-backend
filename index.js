@@ -3,6 +3,7 @@ const cors = require("cors")
 const compression = require("compression")
 const {
   create,
+  createMany,
   findAll,
   findOne,
   update,
@@ -20,6 +21,7 @@ app.use(cors())
 app.use(compression())
 
 app.post("/create", create)
+app.post("/createMany", createMany)
 app.get("/findAll", findAll)
 app.get("/findOne", findOne)
 app.patch("/update", update)

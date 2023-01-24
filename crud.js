@@ -1,5 +1,5 @@
 const { MongoClient, ObjectId } = require("mongodb")
-const mongoClient = new MongoClient("mongodb://0.0.0.0:27017/flex_backend")
+const mongoClient = new MongoClient("mongodb://0.0.0.0:27017")
 
 async function create(req, res) {
   const { database, collection, doc } = req.body
@@ -7,6 +7,15 @@ async function create(req, res) {
     .db(database)
     .collection(collection)
     .insertOne(doc)
+  return res.json({ result })
+}
+
+async function createMany(req, res) {
+  const { database, collection, doc } = req.body
+  const result = await mongoClient
+    .db(database)
+    .collection(collection)
+    .insertMany(doc)
   return res.json({ result })
 }
 
@@ -73,6 +82,7 @@ async function deleteOne(req, res) {
 
 module.exports = {
   create,
+  createMany,
   findAll,
   findOne,
   update,
