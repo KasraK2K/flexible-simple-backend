@@ -1,16 +1,7 @@
 const express = require("express")
 const cors = require("cors")
 const compression = require("compression")
-const {
-  create,
-  createMany,
-  findAll,
-  findOne,
-  update,
-  upsert,
-  replaceOne,
-  deleteOne,
-} = require("./crud.js")
+const mongoCrud = require("./crud.js")
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -20,13 +11,13 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cors())
 app.use(compression())
 
-app.post("/create", create)
-app.post("/createMany", createMany)
-app.get("/findAll", findAll)
-app.get("/findOne", findOne)
-app.patch("/update", update)
-app.put("/upsert", upsert)
-app.put("/replaceOne", replaceOne)
-app.delete("/delete", deleteOne)
+app.post("/create", mongoCrud.create)
+app.post("/createMany", mongoCrud.createMany)
+app.get("/findAll", mongoCrud.findAll)
+app.get("/findOne", mongoCrud.findOne)
+app.patch("/update", mongoCrud.update)
+app.put("/upsert", mongoCrud.upsert)
+app.put("/replaceOne", mongoCrud.replaceOne)
+app.delete("/delete", mongoCrud.deleteOne)
 
 app.listen(port, () => console.log(`Server running on port ${port}`))
