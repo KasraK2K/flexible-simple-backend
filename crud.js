@@ -107,12 +107,37 @@ class MongoCrud {
   async upsert(req, res) {
     try {
       const { database, collection, selector, doc } = req.body
-      if ("_id" in selector) selector._id = new ObjectId(selector._id)
-      const result = await mongoClient
-        .db(database)
-        .collection(collection)
-        .updateOne(selector, { $set: doc }, { upsert: true })
-      return res.json({ result })
+      if (selector && Object.keys(selector).length) {
+        if ("_id" in selector) selector._id = new ObjectId(selector._id)
+        const row = await mongoClient
+          .db(database)
+          .collection(collection)
+          .findOne(selector)
+        // Update if selector find a row
+        if (row) {
+          const result = await mongoClient
+            .db(database)
+            .collection(collection)
+            .updateOne(selector, { $set: doc }, { upsert: false })
+          return res.json({ result })
+        }
+        // Upsert if selector is wrong
+        else {
+          const result = await mongoClient
+            .db(database)
+            .collection(collection)
+            .updateOne(selector, { $set: doc }, { upsert: true })
+          return res.json({ result })
+        }
+      }
+      // Create if selector is empty
+      else {
+        const result = await mongoClient
+          .db(database)
+          .collection(collection)
+          .insertOne(doc)
+        return res.json({ result })
+      }
     } catch (error) {
       return res.status(500).json({ error: error.message })
     }
